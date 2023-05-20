@@ -1,26 +1,58 @@
 version: "3"
 volumes:
-  mongo-data:
+  MONGO_DATA:
+    name: MONGO_DATA
+  MONGO_CONFIG:
+    name: MONGO_CONFIG
+networks:
+  MONGO:
+    name: MONGO
 services:
-  mongodb:
+  mongo:
     image: mongo
+    container_name: mongo
+    restart: always
     ports:
       - 27017:27017
+    networks:
+    - MONGO
+    volumes:
+      - type: volume
+        source: MONGO_DATA
+        target: /data/db
+      - type: volume
+        source: MONGO_CONFIG
+        target: /data/configdb
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}
-    volumes:
-      - mongo-data:/data/db
   mongo-express:
     image: mongo-express
+    container_name: mongo-express
+    restart: always
     ports:
+      - 8080:8080
       - 8081:8081
+    networks:
+      - MONGO
+    volumes:
+      - type: bind
+        source: ./wait-for.sh
+        target: /wait-for.sh
+    entrypoint:
+      - /bin/sh
+      - /wait-for.sh
+      - mongo:27017
+      - --
+      - tini
+      - --
+      - /docker-entrypoint.sh
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PWD}
+      ME_CONFIG_MONGODB_SERVER: mongo
       ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_SERVER: mongodb
-    volumes:
-      - mongo-data:/data/db
     depends_on:
-      - mongodb
+      mongo:
+        condition: service_started
+        restart: true
