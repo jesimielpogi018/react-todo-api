@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 
 // allocate middleware
+app.use(express.json());
 
 // import routes
 const todos = require("./todos/todos");
