@@ -11,21 +11,21 @@ Http Headers and Database Design for the database.
     - mongo-express
 
     To install:
-    `docker pull mongo:latest`
-    `docker pull mongo-express:latest`
+    ```docker pull mongo:latest```
+    ```docker pull mongo-express:latest```
 
 2. Clone the git repository:
-    `git clone *repo link*`
+    ```git clone *repo link*```
 
 3. Install NPM dependencies:
-    `npm install`
+    ```npm install```
 
 4. Run the Docker Container by running docker compose in detach mode:
-    `docker compose up -d`
+    ```docker compose up -d```
 
 5. Start the application server:
     - in development mode:
-    `npm run dev`
+    ```npm run dev```
     - in production mode:
-    `npm run start`
+    ```npm run start```
 6. Enjoy!
