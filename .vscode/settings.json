@@ -3,5 +3,8 @@
     "editor.hover.delay": 1500,
     "editor.acceptSuggestionOnCommitCharacter": true,
     "editor.tabCompletion": "on",
-    "editor.quickSuggestionsDelay": 750
+    "editor.quickSuggestionsDelay": 750,
+    "cSpell.words": [
+        "todos"
+    ]
 }
