@@ -44,7 +44,20 @@ router.get("/", (req, res, next) => {
 // get todos
 router.get("/:id", (req, res, next) => {
   const { id } = req.params;
-  const query = { _id: new ObjectId(id) };
+  let query;
+
+  try {
+    query = { _id: new ObjectId(id) };
+  } catch (error) {
+    return res.status(400).json({
+      message:
+        "Error on the id parameter, make sure the id is mongodb generated id!",
+      error: {
+        name: error.name,
+        message: error.message,
+      },
+    });
+  }
 
   conn
     .connect()
@@ -103,15 +116,28 @@ router.post("/", noEmptyReqBody, validateAddTodoReqBody, (req, res, next) => {
 });
 
 // edit todos
-router.patch("/", noEmptyReqBody, (req, res, next) => {});
+router.patch("/", noEmptyReqBody, (req, res) => {});
 
 // overwrite todos
-router.put("/", noEmptyReqBody, (req, res, next) => {});
+router.put("/", noEmptyReqBody, (req, res) => {});
 
 // delete todos
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  const query = { _id: new ObjectId(id) };
+  let query;
+
+  try {
+    query = { _id: new ObjectId(id) };
+  } catch (error) {
+    return res.status(400).json({
+      message:
+        "Error on the id parameter, make sure the id is mongodb generated id!",
+      error: {
+        name: error.name,
+        message: error.message,
+      },
+    });
+  }
 
   conn
     .connect()
@@ -126,8 +152,11 @@ router.delete("/:id", (req, res, next) => {
           .json({ message: "Todo Task Deleted!", count: result.deletedCount });
       } else {
         res
-        .status(400)
-        .json({ message: "Nothing to delete! Make sure the id is correct", count: result.deletedCount });
+          .status(400)
+          .json({
+            message: "Nothing to delete! Make sure the id is correct",
+            count: result.deletedCount,
+          });
       }
     })
     .catch((err) => {
