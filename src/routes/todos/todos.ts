@@ -4,15 +4,15 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const DB = require("../db");
 
 // middleware
-const { noEmptyReqBody } = require("../middlewares/noEmptyReqBody");
+const { noEmptyReqBody } = require("../../middlewares/noEmptyReqBody");
 const {
   validateAddTodoReqBody,
-} = require("../middlewares/validateAddTodoReqBody");
+} = require("../../middlewares/validateAddTodoReqBody");
 const {
   validateEditTodoReqBody,
-} = require("../middlewares/validateEditTodoReqBody");
+} = require("../../middlewares/validateEditTodoReqBody");
 
-ll; // mongodb uri
+// mongodb uri
 const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
 
 // create MongoClient client
@@ -192,4 +192,4 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

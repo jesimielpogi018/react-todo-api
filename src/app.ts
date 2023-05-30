@@ -8,13 +8,13 @@ const app = express();
 app.use(express.json());
 
 // import routes
-const todos = require("./todos/todos");
+const todos = require("./routes/todos/todos");
 
 // allocate routes
 app.use("/todos", todos);
 
 // routes
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
     res.send("Hello, world!");
 });
 
