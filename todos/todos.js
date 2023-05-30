@@ -8,8 +8,11 @@ const { noEmptyReqBody } = require("../middlewares/noEmptyReqBody");
 const {
   validateAddTodoReqBody,
 } = require("../middlewares/validateAddTodoReqBody");
+const {
+  validateEditTodoReqBody,
+} = require("../middlewares/validateEditTodoReqBody");
 
-// mongodb uri
+ll; // mongodb uri
 const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
 
 // create MongoClient client
@@ -20,7 +23,6 @@ const conn = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-
 // get all todos
 router.get("/", (req, res, next) => {
   conn
@@ -116,7 +118,31 @@ router.post("/", noEmptyReqBody, validateAddTodoReqBody, (req, res, next) => {
 });
 
 // edit todos
-router.patch("/", noEmptyReqBody, (req, res) => {});
+router.patch("/", noEmptyReqBody, validateEditTodoReqBody, (req, res) => {
+  const { id, data } = req.body;
+  let query;
+  let previousData;
+
+  // validate query id for the ObjectId
+  try {
+    query = { _id: new ObjectId(id) };
+  } catch (error) {
+    return res.status(400).json({
+      message:
+        "Error on the id body, make sure the id is mongodb generated _id!",
+      error: {
+        name: error.name,
+        message: error.message,
+      },
+    });
+  }
+
+  try {
+
+  } catch (error) {
+    
+  }
+});
 
 // overwrite todos
 router.put("/", noEmptyReqBody, (req, res) => {});
@@ -151,12 +177,10 @@ router.delete("/:id", (req, res) => {
           .status(200)
           .json({ message: "Todo Task Deleted!", count: result.deletedCount });
       } else {
-        res
-          .status(400)
-          .json({
-            message: "Nothing to delete! Make sure the id is correct",
-            count: result.deletedCount,
-          });
+        res.status(400).json({
+          message: "Nothing to delete! Make sure the id is correct",
+          count: result.deletedCount,
+        });
       }
     })
     .catch((err) => {

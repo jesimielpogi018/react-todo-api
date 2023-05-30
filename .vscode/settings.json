@@ -1,4 +1,5 @@
 {
+    "editor.tabSize": 2,
     "editor.acceptSuggestionOnEnter": "off",
     "editor.hover.delay": 1500,
     "editor.acceptSuggestionOnCommitCharacter": true,
