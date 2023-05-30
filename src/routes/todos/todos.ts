@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const DB = require("../db");
+import { db as DB } from "../../db"; 
 
 // middleware
 const { noEmptyReqBody } = require("../../middlewares/noEmptyReqBody");
@@ -192,4 +192,5 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-export default router;
+export { };
+module.exports = router;
