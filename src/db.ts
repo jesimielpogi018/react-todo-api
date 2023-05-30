@@ -12,4 +12,4 @@ const db: DB = {
   AUTH: "todo_users_auth",
 };
 
-module.exports = db;
+export { db };
