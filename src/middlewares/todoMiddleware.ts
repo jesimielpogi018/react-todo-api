@@ -56,7 +56,6 @@ const validateEditTodoReqBody = (
 ) => {
   const expectedKeys = ["todoTask", "isStarred", "todoDueDate", "todoDetails"];
   const { id, data } = req.body;
-  const filteredData = {};
 
   if (id === undefined || id === null) {
     res.status(400).json({
@@ -95,6 +94,37 @@ const validateOverwriteTodoReqBody = (
   res: Response,
   next: NextFunction
 ) => {
+  const { id, data } = req.body;
+  const requiredKeys = ["todoTask", "todoDetails", "isStarred", "todoDueDate"];
+
+  if (id === undefined || id === null) {
+    res.status(400).json({
+      message: "ID is not defined!",
+    });
+  }
+
+  if (typeof id !== "string") {
+    res.status(400).json({
+      message: "ID is not valid! Use valid mongodb _id",
+    });
+  }
+
+  // check whether there is a data object where the new data will be stored
+  if (data === undefined || data === null) {
+    res.status(400).json({
+      message: "data to update the document is not defined!",
+    });
+  }
+
+  // will check if the data contains all the required keys
+  const keys = Object.keys(data);
+
+  for (let key of requiredKeys) {
+    if (keys.includes(key)) {
+      console.log(key);
+    }
+  }
+
   next();
 };
 

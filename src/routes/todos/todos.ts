@@ -186,7 +186,14 @@ router.patch(
 );
 
 // overwrite todos
-router.put("/", noEmptyReqBody, (req: Request, res: Response) => {});
+router.put(
+  "/",
+  noEmptyReqBody,
+  validateOverwriteTodoReqBody,
+  (req: Request, res: Response) => {
+    res.send("Okay");
+  }
+);
 
 // delete todos
 router.delete("/:id", (req: Request, res: Response) => {
