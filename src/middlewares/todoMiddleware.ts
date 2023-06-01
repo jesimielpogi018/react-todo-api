@@ -98,7 +98,7 @@ const validateOverwriteTodoReqBody = (
   next();
 };
 
-module.exports = {
+export {
   noEmptyReqBody,
   validateAddTodoReqBody,
   validateEditTodoReqBody,

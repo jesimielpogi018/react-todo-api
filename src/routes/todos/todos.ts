@@ -5,13 +5,12 @@ import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 import { db as DB } from "../../db";
 
 // middleware
-const { noEmptyReqBody } = require("../../middlewares/noEmptyReqBody");
-const {
+import {
+  noEmptyReqBody,
   validateAddTodoReqBody,
-} = require("../../middlewares/validateAddTodoReqBody");
-const {
   validateEditTodoReqBody,
-} = require("../../middlewares/validateEditTodoReqBody");
+  validateOverwriteTodoReqBody,
+} from "../../middlewares/todoMiddleware";
 
 // mongodb uri
 const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
