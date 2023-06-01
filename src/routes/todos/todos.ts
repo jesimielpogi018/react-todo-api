@@ -1,7 +1,8 @@
 const express = require("express");
+import { Request, Response } from "express";
 const router = express.Router();
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-import { db as DB } from "../../db"; 
+import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
+import { db as DB } from "../../db";
 
 // middleware
 const { noEmptyReqBody } = require("../../middlewares/noEmptyReqBody");
@@ -24,7 +25,7 @@ const conn = new MongoClient(uri, {
   },
 });
 // get all todos
-router.get("/", (req, res, next) => {
+router.get("/", (req: Request, res: Response) => {
   conn
     .connect()
     .then((client) => {
@@ -44,7 +45,7 @@ router.get("/", (req, res, next) => {
 });
 
 // get todos
-router.get("/:id", (req, res, next) => {
+router.get("/:id", (req: Request, res: Response) => {
   const { id } = req.params;
   let query;
 
@@ -80,75 +81,116 @@ router.get("/:id", (req, res, next) => {
 });
 
 // add todos
-router.post("/", noEmptyReqBody, validateAddTodoReqBody, (req, res, next) => {
-  const { todoTask, isStarred, todoDueDate, todoDetails, todoCreatedAt } =
-    req.body;
+router.post(
+  "/",
+  noEmptyReqBody,
+  validateAddTodoReqBody,
+  (req: Request, res: Response) => {
+    const { todoTask, isStarred, todoDueDate, todoDetails, todoCreatedAt } =
+      req.body;
 
-  conn
-    .connect()
-    .then((client) => {
-      const collection = client.db(DB.DB).collection(DB.TODOS);
+    conn
+      .connect()
+      .then((client) => {
+        const collection = client.db(DB.DB).collection(DB.TODOS);
 
-      const data = {
-        todoTask,
-        isStarred,
-        todoCreatedAt,
-        todoUpdatedAt: todoCreatedAt,
-        todoDueDate,
-        todoDetails,
-      };
+        const data = {
+          todoTask,
+          isStarred,
+          todoCreatedAt,
+          todoUpdatedAt: todoCreatedAt,
+          todoDueDate,
+          todoDetails,
+        };
 
-      return collection.insertOne(data);
-    })
-    .then((result) => {
-      if (result.acknowledged) {
-        res.status(200).json({
-          message: "Inserted User Successfully!",
-          _id: result.insertedId,
+        return collection.insertOne(data);
+      })
+      .then((result) => {
+        if (result.acknowledged) {
+          res.status(200).json({
+            message: "Inserted User Successfully!",
+            _id: result.insertedId,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({
+          message: "Error Ocurred!",
+          error: err,
         });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({
-        message: "Error Ocurred!",
-        error: err,
       });
-    });
-});
+  }
+);
 
 // edit todos
-router.patch("/", noEmptyReqBody, validateEditTodoReqBody, (req, res) => {
-  const { id, data } = req.body;
-  let query;
-  let previousData;
+router.patch(
+  "/",
+  noEmptyReqBody,
+  validateEditTodoReqBody,
+  (req: Request, res: Response) => {
+    const { id, data } = req.body;
+    let filter;
+    const updateData: any = {};
 
-  // validate query id for the ObjectId
-  try {
-    query = { _id: new ObjectId(id) };
-  } catch (error) {
-    return res.status(400).json({
-      message:
-        "Error on the id body, make sure the id is mongodb generated _id!",
-      error: {
-        name: error.name,
-        message: error.message,
-      },
-    });
+    const entries = Object.entries(data);
+
+    for (const [key, value] of entries) {
+      updateData[key] = value;
+    }
+
+    const updateAt = new Date().getTime().toString();
+    updateData.todoUpdatedAt = updateAt;
+
+    const updateDocument = { $set: updateData };
+
+    // validate query id for the ObjectId
+    try {
+      filter = { _id: new ObjectId(id) };
+    } catch (error) {
+      return res.status(400).json({
+        message:
+          "Error on the id body, make sure the id is mongodb generated _id!",
+        error: {
+          name: error.name,
+          message: error.message,
+        },
+      });
+    }
+
+    conn
+      .connect()
+      .then((client) => {
+        const collection = client.db(DB.DB).collection(DB.TODOS);
+        return collection.updateOne(filter, updateDocument);
+      })
+      .then((result) => {
+        if (result.acknowledged) {
+          res.status(200).json({
+            message: "Data update successful!",
+          });
+        } else {
+          res.status(400).json({
+            message:
+              "Data update is not acknowledge, make sure the specified _id is correct!",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({
+          message: "Error Ocurred!",
+          error: err,
+        });
+      });
   }
-
-  try {
-
-  } catch (error) {
-    
-  }
-});
+);
 
 // overwrite todos
-router.put("/", noEmptyReqBody, (req, res) => {});
+router.put("/", noEmptyReqBody, (req: Request, res: Response) => {});
 
 // delete todos
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: Request, res: Response) => {
   const { id } = req.params;
   let query;
 
@@ -192,5 +234,5 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-export { };
+export {};
 module.exports = router;
