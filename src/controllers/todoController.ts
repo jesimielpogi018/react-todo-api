@@ -116,6 +116,12 @@ class TodoController {
       const collection = client.db(DB.DB).collection(DB.TODOS);
       const result = await collection.deleteOne(query);
 
+      if (!result.acknowledged) {
+        res.status(400).json({
+          message: "Todo deletion not acknowledge!",
+        });
+      }
+
       if (result.deletedCount === 1) {
         res.status(200).json({
           message: "Todo deleted successfully!",

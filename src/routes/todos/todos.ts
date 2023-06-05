@@ -34,7 +34,8 @@ router.patch(
   TodoController.editTodo
 );
 
-router.delete("/", TodoController.deleteTodo);
+// delete
+router.delete("/:id", TodoController.deleteTodo);
 
 export {};
 module.exports = router;
