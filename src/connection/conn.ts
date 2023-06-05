@@ -3,6 +3,7 @@ import {
   MongoClient,
   type MongoClientOptions,
   ServerApiVersion,
+  ObjectId,
 } from "mongodb";
 
 // env
@@ -25,4 +26,4 @@ const options: MongoClientOptions = {
 
 const conn: MongoClient = new MongoClient(MONGO_URL, options);
 
-export { conn };
+export { conn, ObjectId };
