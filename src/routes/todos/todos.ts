@@ -1,7 +1,8 @@
 const express = require("express");
 import { Request, Response } from "express";
 const router = express.Router();
-import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
+import { conn } from "../../connection/conn";
+import { ObjectId } from "mongodb";
 import { db as DB } from "../../db";
 
 // middleware
@@ -11,17 +12,6 @@ import {
   validateEditTodoReqBody,
 } from "../../middlewares/todoMiddleware";
 
-// mongodb uri
-const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PWD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`;
-
-// create MongoClient client
-const conn = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
 // get all todos
 router.get("/", (req: Request, res: Response) => {
   conn
