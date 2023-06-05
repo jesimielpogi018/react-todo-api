@@ -24,3 +24,5 @@ const options: MongoClientOptions = {
 };
 
 const conn: MongoClient = new MongoClient(MONGO_URL, options);
+
+export { conn };
