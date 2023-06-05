@@ -106,6 +106,33 @@ class TodoController {
       });
     }
   }
+
+  static async deleteTodo(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const query = { _id: new ObjectId(id) };
+
+      const client = await conn.connect();
+      const collection = client.db(DB.DB).collection(DB.TODOS);
+      const result = await collection.deleteOne(query);
+
+      if (result.deletedCount === 1) {
+        res.status(200).json({
+          message: "Todo deleted successfully!",
+        });
+      } else {
+        res.status(400).json({
+          message: "Todo task not found!",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        message: "Error Occurred!",
+        error: error,
+      });
+    }
+  }
 }
 
 export default TodoController;

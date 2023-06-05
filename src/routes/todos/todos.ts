@@ -1,8 +1,6 @@
+import { Router } from "express";
 const express = require("express");
-import { Request, Response } from "express";
-const router = express.Router();
-import { conn, ObjectId } from "../../connection/conn";
-import { db as DB } from "../../db";
+const router: Router = express.Router();
 
 // controller
 import TodoController from "../../controllers/todoController";
@@ -35,6 +33,8 @@ router.patch(
   validateEditTodoReqBody,
   TodoController.editTodo
 );
+
+router.delete("/", TodoController.deleteTodo);
 
 export {};
 module.exports = router;
