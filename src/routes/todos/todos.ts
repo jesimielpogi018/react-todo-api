@@ -9,7 +9,6 @@ import {
   noEmptyReqBody,
   validateAddTodoReqBody,
   validateEditTodoReqBody,
-  validateOverwriteTodoReqBody,
 } from "../../middlewares/todoMiddleware";
 
 // mongodb uri
@@ -184,61 +183,6 @@ router.patch(
       });
   }
 );
-
-// overwrite todos
-router.put(
-  "/",
-  noEmptyReqBody,
-  validateOverwriteTodoReqBody,
-  (req: Request, res: Response) => {
-    res.send("Okay");
-  }
-);
-
-// delete todos
-router.delete("/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  let query;
-
-  try {
-    query = { _id: new ObjectId(id) };
-  } catch (error) {
-    return res.status(400).json({
-      message:
-        "Error on the id parameter, make sure the id is mongodb generated id!",
-      error: {
-        name: error.name,
-        message: error.message,
-      },
-    });
-  }
-
-  conn
-    .connect()
-    .then((client) => {
-      const collection = client.db(DB.DB).collection(DB.TODOS);
-      return collection.deleteOne(query);
-    })
-    .then((result) => {
-      if (result.acknowledged && result.deletedCount >= 1) {
-        res
-          .status(200)
-          .json({ message: "Todo Task Deleted!", count: result.deletedCount });
-      } else {
-        res.status(400).json({
-          message: "Nothing to delete! Make sure the id is correct",
-          count: result.deletedCount,
-        });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({
-        message: "Error Ocurred!",
-        error: err,
-      });
-    });
-});
 
 export {};
 module.exports = router;
